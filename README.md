@@ -11,7 +11,7 @@
 | `assets/style.css` | цвета и шрифты по `web/brand.json` платформы |
 | `assets/app.js` | кнопки «Стать тестером» и плееры до/после |
 | `assets/brand/` | вордмарк и монограмма из `docs/brand/` платформы |
-| `assets/fonts/` | Cinzel, Cormorant Garamond, Inter (woff2) + `licenses/` — тексты SIL OFL 1.1 |
+| `assets/fonts/` | Young Serif, Lora, Inter, JetBrains Mono (woff2) + `licenses/` — тексты SIL OFL 1.1 |
 | `assets/media/` | до/после: `before.mp4` 1,7 МБ, `after.mp4` 2,0 МБ (H.264 540×960, faststart) + постеры |
 | `assets/og.jpg`, `assets/apple-touch-icon.png` | превью ссылки в мессенджерах, иконка на iPhone |
 | `CNAME` | домен `michelangelo.lol` |
