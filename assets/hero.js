@@ -19,7 +19,7 @@
   var img = new Image();
   img.src = root.getAttribute('data-src');
 
-  var W = 0, H = 0, dpr = 1, cell = 10, fs = 12, fresco = null, plaster = null, parts = [], t0 = 0, raf = 0;
+  var W = 0, H = 0, dpr = 1, cell = 10, fs = 12, fresco = null, plaster = null, silhouette = null, parts = [], t0 = 0, raf = 0;
   var view = { x: 0, y: 0, w: 0, h: 0 }; // where the image is drawn (cover-fit)
   var mouse = { x: -1e4, y: -1e4, on: false };
   var running = false, visible = true, ready = false;
@@ -51,8 +51,9 @@
     view.h = view.w / ia;
     view.x = W / 2 - view.w * SEAM;
     view.y = (H - view.h) / 2;
-    cell = W < 560 ? 7 : W < 1000 ? 8 : 9;
+    cell = W < 560 ? 7 : W < 1000 ? 7.5 : 8;
     buildFresco();
+    buildSilhouette();
     buildParticles();
   }
 
@@ -111,6 +112,21 @@
     c.fillStyle = h; c.fillRect(0, 0, W, H);
   }
 
+  function buildSilhouette() {
+    var sw = Math.ceil(W / 3), shh = Math.ceil(H / 3);
+    silhouette = document.createElement('canvas'); silhouette.width = sw; silhouette.height = shh;
+    var c = silhouette.getContext('2d');
+    c.imageSmoothingQuality = 'high';
+    c.drawImage(img, view.x / 3, view.y / 3, view.w / 3, view.h / 3);
+    var id = c.getImageData(0, 0, sw, shh), a = id.data, sx = (view.x + view.w * SEAM) / 3;
+    for (var n = 0, px = 0; n < a.length; n += 4, px++) {
+      var x = px % sw, m = smooth(0.075, 0.15, (a[n] - a[n + 2]) / 255) * smooth(sx, sx - 6, x);
+      var l = (0.299 * a[n] + 0.587 * a[n + 1] + 0.114 * a[n + 2]) / 255;
+      a[n] = 164; a[n + 1] = 48; a[n + 2] = 42; a[n + 3] = 255 * m * (0.35 + 0.65 * (1 - l));
+    }
+    c.putImageData(id, 0, 0);
+  }
+
   // Adam's half: the arm is written with words — one particle per word.
   // what a language model "thinks" in: tokens, tensors, and a few creative calls
   var WORDS = ('attention softmax(z) embed() token logits predict weights argmax decode <eos> ' +
@@ -135,28 +151,46 @@
     c.drawImage(img, view.x / cell, view.y / cell, view.w / cell, view.h / cell);
     var d = c.getImageData(0, 0, cols, rows).data;
     var sx = view.x + view.w * SEAM;
-    var V = new Float32Array(cols * rows);
+    var V = new Float32Array(cols * rows), L = new Float32Array(cols * rows), S = new Float32Array(cols * rows);
     for (var j = 0; j < rows; j++) for (var i = 0; i < cols; i++) {
       var x = (i + 0.5) * cell, y = (j + 0.5) * cell;
       if (x > sx) continue;
       var k = (j * cols + i) * 4, R = d[k] / 255, G = d[k + 1] / 255, B = d[k + 2] / 255;
       var lum = 0.299 * R + 0.587 * G + 0.114 * B;
+      L[j * cols + i] = lum;
       var dark = Math.min(1, Math.max(0, (1 - lum) * 1.4 - 0.2));
-      var skin = Math.max(smooth(0.075, 0.15, R - B), smooth(0.74, 0.5, lum)); // warm or darker than the wall = arm
+      S[j * cols + i] = dark;
+      var skin = smooth(0.075, 0.15, R - B); // warm = arm, the wall is neutral
       var edge = smooth(0, 0.06, (x - view.x) / view.w) * smooth(0, 0.18, (y - view.y) / view.h) * smooth(0, 0.18, (view.y + view.h - y) / view.h);
       V[j * cols + i] = Math.min(1, Math.max(0, (skin * (0.34 + 0.66 * curve(dark)) - 0.04) * edge));
+    }
+    // contour: silhouette border + strong tonal edges (finger gaps, knuckles) → drawn darker, like pen lines
+    var E = new Float32Array(cols * rows);
+    var IN = function (a, b) { return a >= 0 && b >= 0 && a < cols && b < rows && V[b * cols + a] >= 0.1; };
+    var LL = function (a, b) { a = Math.max(0, Math.min(cols - 1, a)); b = Math.max(0, Math.min(rows - 1, b)); return L[b * cols + a]; };
+    for (j = 0; j < rows; j++) for (i = 0; i < cols; i++) {
+      if (!IN(i, j)) continue;
+      var border = !IN(i - 1, j) || !IN(i + 1, j) || !IN(i, j - 1) || !IN(i, j + 1);
+      var gx = (LL(i + 1, j - 1) + 2 * LL(i + 1, j) + LL(i + 1, j + 1)) - (LL(i - 1, j - 1) + 2 * LL(i - 1, j) + LL(i - 1, j + 1));
+      var gy = (LL(i - 1, j + 1) + 2 * LL(i, j + 1) + LL(i + 1, j + 1)) - (LL(i - 1, j - 1) + 2 * LL(i, j - 1) + LL(i + 1, j - 1));
+      var g = Math.sqrt(gx * gx + gy * gy);
+      E[j * cols + i] = border ? 1 : smooth(0.4, 0.7, g);
     }
     fs = Math.round(cell * 1.2);
     ctx.font = '500 ' + fs + 'px "JetBrains Mono", Menlo, "SF Mono", ui-monospace, monospace';
     var cw = ctx.measureText('m').width;              // monospace: every letter is this wide
     parts = []; wi = 0;
-    function push(px, j, ch, ww, v, isWord, isEgg, isGap) {
-      var col = isWord ? mix(RED, INK, 0.25) : v > 0.55 ? mix(RED, INK, Math.min(1, (v - 0.55) / 0.45) * 0.6) : mix([212, 162, 150], RED, v / 0.55);
+    var PALE = [228, 186, 175], DEEP = [92, 26, 22];
+    function push(px, j, ch, ww, v, isWord, isEgg, isGap, e, sh) {
+      e = e || 0; sh = sh === undefined ? v : sh;
+      // shading from pale (lit skin) → brand red → deep (shadow); contours are deep and fully opaque
+      var t = curve(sh);
+      var col = isWord ? mix(RED, INK, 0.25) : e > 0.5 ? mix(RED, DEEP, 0.75) : t < 0.5 ? mix(PALE, RED, t / 0.5) : mix(RED, DEEP, (t - 0.5) / 0.5);
       var dist = (sx - px) / view.w;
       parts.push({
         x: px, y: (j + 0.5) * cell, w: ww, ch: ch, v: v, word: isWord,
         col: 'rgb(' + (col[0] | 0) + ',' + (col[1] | 0) + ',' + (col[2] | 0) + ')',
-        a: isGap ? 0.3 : isWord ? 0.95 : 0.62 + 0.38 * v, egg: !!isEgg,
+        a: e > 0.5 ? 1 : isGap ? 0.25 : isWord ? 0.95 : 0.35 + 0.6 * curve(sh), egg: !!isEgg,
         ox: (Math.random() - 0.5) * 260, oy: (Math.random() - 0.5) * 180 - 40,
         mx: 0, my: 0,
         delay: (0.65 - Math.min(0.65, dist)) * 1100 + Math.random() * 350 + (isEgg ? 1600 : 0),
@@ -202,7 +236,10 @@
         if (placed) continue;
         var ch = STREAM[k++ % STREAM.length];
         // spaces keep the silhouette solid: a faint dot instead of a hole
-        push(i * cell + (cell - cw) / 2, j, ch === ' ' ? '\u00b7' : ch, cw, v0, false, false, ch === ' ');
+        var ee = E[j * cols + i], sh0 = S[j * cols + i];
+        // on a contour a space becomes a stroke too, so the outline never breaks
+        var glyph = ch === ' ' ? (ee > 0.5 ? '\u00b7' : '\u00b7') : ch;
+        push(i * cell + (cell - cw) / 2, j, glyph, cw, v0, false, false, ch === ' ' && ee <= 0.5, ee, sh0);
       }
     }
     parts.sort(function (a, b) { return a.col < b.col ? -1 : 1; });
@@ -248,6 +285,9 @@
     ctx.drawImage(fresco, 0, 0, W, H);
     ctx.globalAlpha = 1;
 
+    ctx.globalAlpha = 0.16 * (reduce ? 1 : smooth(600, 1900, t));
+    ctx.drawImage(silhouette, 0, 0, W, H);
+    ctx.globalAlpha = 1;
     ctx.font = '500 ' + fs + 'px "JetBrains Mono", Menlo, "SF Mono", ui-monospace, monospace';
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     var R2 = Math.pow(W < 560 ? 60 : 90, 2), tilt = mouse.on ? Math.max(-1, Math.min(1, (mouse.x - W * 0.5) / (W * 0.5))) * 10 : 0;
@@ -260,7 +300,7 @@
       if (!reduce && k >= 1) y += Math.sin(t * 0.0016 - p.ph) * 0.9;           // ripple, very soft
       // cursor: push characters away, spring back
       var tx = 0, ty = 0;
-      if (mouse.on && !p.egg) {
+      if (mouse.on) {
         var dx = x + p.w / 2 - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
         if (d2 < R2) { var f = 1 - d2 / R2, dd = Math.sqrt(d2) || 1; tx = dx / dd * f * f * 34; ty = dy / dd * f * f * 34; }
       }
