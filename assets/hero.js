@@ -51,7 +51,7 @@
     view.h = view.w / ia;
     view.x = W / 2 - view.w * SEAM;
     view.y = (H - view.h) / 2;
-    cell = W < 560 ? 9 : W < 1000 ? 10 : 11;
+    cell = W < 560 ? 7 : W < 1000 ? 8 : 9;
     buildFresco();
     buildParticles();
   }
@@ -150,13 +150,13 @@
     ctx.font = '500 ' + fs + 'px "JetBrains Mono", Menlo, "SF Mono", ui-monospace, monospace';
     var cw = ctx.measureText('m').width;              // monospace: every letter is this wide
     parts = []; wi = 0;
-    function push(px, j, ch, ww, v, isWord, isEgg) {
+    function push(px, j, ch, ww, v, isWord, isEgg, isGap) {
       var col = isWord ? mix(RED, INK, 0.25) : v > 0.55 ? mix(RED, INK, Math.min(1, (v - 0.55) / 0.45) * 0.6) : mix([212, 162, 150], RED, v / 0.55);
       var dist = (sx - px) / view.w;
       parts.push({
         x: px, y: (j + 0.5) * cell, w: ww, ch: ch, v: v, word: isWord,
         col: 'rgb(' + (col[0] | 0) + ',' + (col[1] | 0) + ',' + (col[2] | 0) + ')',
-        a: isWord ? 0.95 : 0.45 + 0.5 * v, egg: !!isEgg,
+        a: isGap ? 0.3 : isWord ? 0.95 : 0.62 + 0.38 * v, egg: !!isEgg,
         ox: (Math.random() - 0.5) * 260, oy: (Math.random() - 0.5) * 180 - 40,
         mx: 0, my: 0,
         delay: (0.65 - Math.min(0.65, dist)) * 1100 + Math.random() * 350 + (isEgg ? 1600 : 0),
@@ -166,33 +166,43 @@
     // Adam's arm is written with one sentence, letter by letter, row by row —
     // the line attributed to Michelangelo himself. Read it up close.
     var STREAM = 'i saw the angel in the marble and carved until i set him free \u00b7 ';
-    var EGG = 'you found it. say hi: t.me/foundermd';
-    var k = 0, eggRow = -1, eggDone = false;
-    // easter egg goes into the widest row of the forearm
-    var best = 0;
-    for (j = 0; j < rows; j++) {
-      var cnt = 0; for (i = 0; i < cols; i++) if (V[j * cols + i] >= 0.1) cnt++;
-      if (cnt > best && j > rows * 0.35 && j < rows * 0.75) { best = cnt; eggRow = j; }
-    }
+    var EGGS = [
+      { text: 'you found it. say hi: t.me/foundermd', from: 0.45, to: 0.75 },
+      { text: 'everything around you that you call life was made up by people that were no smarter than you', from: 0.2, to: 0.45 }
+    ];
+    var k = 0;
+    // each easter egg goes into the widest arm row of its band (the Jobs line may wrap over two rows)
+    EGGS.forEach(function (eg) {
+      var bestCnt = 0; eg.row = -1;
+      for (var r = Math.floor(rows * eg.from); r < rows * eg.to; r++) {
+        var cnt = 0; for (var q = 0; q < cols; q++) if (V[r * cols + q] >= 0.1) cnt++;
+        if (cnt > bestCnt) { bestCnt = cnt; eg.row = r; }
+      }
+      eg.pos = 0;
+    });
     for (j = 0; j < rows; j++) {
       for (i = 0; i < cols; i++) {
         var v0 = V[j * cols + i];
         if (v0 < 0.1) continue;
-        if (j === eggRow && !eggDone) {
+        var placed = false;
+        for (var ei = 0; ei < EGGS.length && !placed; ei++) {
+          var eg = EGGS[ei];
+          if (eg.pos >= eg.text.length || (j !== eg.row && j !== eg.row + 2)) continue;
           var run = 0; while (i + run < cols && V[j * cols + i + run] >= 0.1) run++;
-          if (run * cell >= (EGG.length + 2) * cw) {
-            var ex = i * cell + cw;
-            for (var e = 0; e < EGG.length; e++) {
-              if (EGG[e] !== ' ') push(ex + e * cw, j, EGG[e], cw, v0, false, true);
-            }
-            eggDone = true;
-            i += Math.ceil((EGG.length + 2) * cw / cell) - 1;
-            continue;
-          }
+          var room = Math.floor(run * cell / cw) - 2;
+          if (room < 12) continue;
+          var piece = eg.text.slice(eg.pos);
+          if (piece.length > room) { var cut = piece.lastIndexOf(' ', room); piece = piece.slice(0, cut > 0 ? cut : room); }
+          var ex = i * cell + cw;
+          for (var e = 0; e < piece.length; e++) if (piece[e] !== ' ') push(ex + e * cw, j, piece[e], cw, v0, false, true);
+          eg.pos += piece.length + 1;
+          i += Math.ceil((piece.length + 2) * cw / cell) - 1;
+          placed = true;
         }
+        if (placed) continue;
         var ch = STREAM[k++ % STREAM.length];
-        if (ch === ' ') continue;
-        push(i * cell + (cell - cw) / 2, j, ch, cw, v0, false);
+        // spaces keep the silhouette solid: a faint dot instead of a hole
+        push(i * cell + (cell - cw) / 2, j, ch === ' ' ? '\u00b7' : ch, cw, v0, false, false, ch === ' ');
       }
     }
     parts.sort(function (a, b) { return a.col < b.col ? -1 : 1; });
@@ -322,7 +332,7 @@
     new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible && !document.hidden) start(); else stop(); }).observe(root);
   }
 
-  try { console.log('%cmichelangelo', 'font:24px Georgia;color:#A4302A', '\ncurious? we are looking for testers → https://t.me/foundermd'); } catch (e) {}
+  try { console.log('%cmichelangelo', 'font:24px Georgia;color:#A4302A', '\n"everything around you that you call life was made up by people that were no smarter than you." — steve jobs, 1994\ncurious? we are looking for testers → https://t.me/foundermd'); } catch (e) {}
 
   var go = function () { (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(init); };
   if (img.complete && img.naturalWidth) go(); else img.addEventListener('load', go);
