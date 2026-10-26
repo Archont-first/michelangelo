@@ -8,10 +8,10 @@
 | файл | что |
 |---|---|
 | `index.html` | вся страница; **ссылка для тестеров — здесь** (см. ниже) |
-| `assets/style.css` | цвета и шрифты по `web/brand.json` платформы |
+| `assets/style.css` | цвета и шрифты по `web/brand.json` платформы: молочный фон, красный `#A4302A` (логотип и акцент), почти чёрный текст |
 | `assets/app.js` | кнопки «Стать тестером» и плееры до/после |
-| `assets/brand/` | вордмарк и монограмма из `docs/brand/` платформы |
-| `assets/fonts/` | Young Serif, Lora, Inter, JetBrains Mono (woff2) + `licenses/` — тексты SIL OFL 1.1 |
+| `assets/brand/` | вордмарк MICHELANGELO (Young Serif, `-sm` — разрядка для шапки, `-lg` — крупно), монограмма «M» и `favicon.svg` — из `docs/brand/` платформы (`scripts/brand_logos.py`) |
+| `assets/fonts/` | Lora 700 (заголовки, прямой и курсив), Inter (текст), JetBrains Mono (подписи), Young Serif (из него контуры логотипа) — woff2 + `licenses/` — тексты SIL OFL 1.1 |
 | `assets/media/` | до/после: `before.mp4` 1,7 МБ, `after.mp4` 2,0 МБ (H.264 540×960, faststart) + постеры |
 | `assets/og.jpg`, `assets/apple-touch-icon.png` | превью ссылки в мессенджерах, иконка на iPhone |
 | `CNAME` | домен `michelangelo.lol` |
