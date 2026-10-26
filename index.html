@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Michelangelo — ИИ-монтажёр</title>
+  <meta name="description" content="Michelangelo — ИИ-монтажёр: пишешь словами — он монтирует видео. Отсекаем всё лишнее.">
+  <meta name="theme-color" content="#F4EDE3">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Michelangelo — отсекаем всё лишнее">
+  <meta property="og:description" content="ИИ-монтажёр: пишешь словами — он монтирует видео.">
+  <meta property="og:url" content="https://michelangelo.lol/">
+  <meta property="og:image" content="https://michelangelo.lol/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://michelangelo.lol/">
+  <link rel="icon" href="assets/brand/michelangelo-monogram-stone.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/cormorant-garamond-cyrillic-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">К содержанию</a>
+
+  <header class="top">
+    <div class="wrap top__row">
+      <a class="brand" href="#" aria-label="Michelangelo — наверх">
+        <img src="assets/brand/michelangelo-monogram-stone.svg" width="34" height="34" alt="">
+        <span class="brand__name">Michelangelo</span>
+      </a>
+      <a class="btn btn--small" href="#join" data-tester>Стать тестером</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero__inner">
+        <h1 id="hero-title" class="hero__title">
+          <img class="hero__wordmark" src="assets/brand/michelangelo-wordmark.svg" width="593" height="84" alt="Michelangelo">
+        </h1>
+        <div class="rule" aria-hidden="true"></div>
+        <p class="slogan" id="slogan">
+          <span class="slogan__text">Отсекаем всё лишнее</span>
+          <span class="slogan__stone" aria-hidden="true"></span>
+          <span class="slogan__chisel" aria-hidden="true"></span>
+          <span class="chips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </p>
+        <p class="tagline">ИИ-монтажёр: пишешь словами&nbsp;— он&nbsp;монтирует видео</p>
+        <div class="hero__actions">
+          <a class="btn" href="#join" data-tester>Стать тестером</a>
+          <a class="btn btn--ghost" href="#demo">Смотреть до/после</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo" id="demo" aria-labelledby="demo-title">
+      <div class="wrap">
+        <p class="eyebrow">I · До и после</p>
+        <h2 id="demo-title">Одна фраза — готовый ролик</h2>
+        <p class="lead">Попросили «смонтируй круто». Больше ничего не трогали руками.</p>
+
+        <div class="pair">
+          <figure class="clip" data-clip>
+            <div class="clip__frame">
+              <video src="assets/media/before.mp4" poster="assets/media/before.jpg" width="540" height="960"
+                     preload="none" muted playsinline loop aria-label="До: исходное видео, 30 секунд"></video>
+              <button class="clip__play" type="button" aria-label="Смотреть исходник со звуком">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+              </button>
+            </div>
+            <figcaption><b>До</b> исходник 45,6&nbsp;с, паузы и «эээ»</figcaption>
+          </figure>
+          <figure class="clip" data-clip>
+            <div class="clip__frame">
+              <video src="assets/media/after.mp4" poster="assets/media/after.jpg" width="540" height="960"
+                     preload="none" muted playsinline loop aria-label="После: смонтированный ролик, 29,8 секунды"></video>
+              <button class="clip__play" type="button" aria-label="Смотреть результат со звуком">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+              </button>
+            </div>
+            <figcaption><b>После</b> 29,8&nbsp;с, субтитры, зумы, цвет</figcaption>
+          </figure>
+        </div>
+
+        <ul class="facts">
+          <li>убрал «эээ» и «ммм», выровнял паузы</li>
+          <li>вырезал неудачный дубль и прощание</li>
+          <li>лучшую фразу поставил в начало</li>
+          <li>субтитры, цвет, 5 зумов на ключевых словах</li>
+        </ul>
+        <p class="credit">Исходное видео — стоковый ролик с Pexels. Звук включается по нажатию.</p>
+      </div>
+    </section>
+
+    <section class="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <p class="eyebrow">II · Что умеет</p>
+        <h2 id="features-title">Монтажёр, который понимает с полуслова</h2>
+        <ul class="cards">
+          <li class="card">
+            <span class="card__num">I</span>
+            <h3>Понимает обычные слова</h3>
+            <p>«Короче, без дублей», «сделай как рилс», «начни с шутки» — без таймлайна и кнопок.</p>
+          </li>
+          <li class="card">
+            <span class="card__num">II</span>
+            <h3>Чистит речь</h3>
+            <p>Убирает паузы, «эээ», оговорки и неудачные дубли. Режет по словам, а не по секундам.</p>
+          </li>
+          <li class="card">
+            <span class="card__num">III</span>
+            <h3>Субтитры</h3>
+            <p>Крупные, как у блогеров, с выделением ключевых слов. Стиль меняется одной фразой.</p>
+          </li>
+          <li class="card">
+            <span class="card__num">IV</span>
+            <h3>Вертикаль 9:16</h3>
+            <p>Горизонтальное видео превращает в Reels и Shorts, держит кадр на лице.</p>
+          </li>
+          <li class="card">
+            <span class="card__num">V</span>
+            <h3>Ритм и музыка</h3>
+            <p>Собирает нарезку под трек, ставит склейки в бит, добавляет зумы и звуки.</p>
+          </li>
+          <li class="card">
+            <span class="card__num">VI</span>
+            <h3>Цвет и правки</h3>
+            <p>Готовые образы цвета. Каждая правка — новая версия, к любой можно вернуться.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="steps" aria-labelledby="steps-title">
+      <div class="wrap">
+        <p class="eyebrow">III · Как это работает</p>
+        <h2 id="steps-title">Три шага</h2>
+        <ol class="steps__list">
+          <li>
+            <h3>Загрузите видео</h3>
+            <p>Съёмку с телефона, запись разговора или набор клипов с музыкой.</p>
+          </li>
+          <li>
+            <h3>Напишите, что сделать</h3>
+            <p>Как монтажёру в чате: «убери паузы», «добавь субтитры», «собери трейлер».</p>
+          </li>
+          <li>
+            <h3>Заберите ролик</h3>
+            <p>Посмотрите результат, попросите поправить и скачайте в 1080p.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="join" id="join" aria-labelledby="join-title">
+      <div class="wrap join__inner">
+        <img src="assets/brand/michelangelo-monogram-stone.svg" width="64" height="64" alt="">
+        <h2 id="join-title">Попробуйте первым</h2>
+        <p>Ищем тестеров: блогеров, SMM и всех, кто снимает видео. Напишите — пришлём доступ.</p>
+        <!-- ССЫЛКА ДЛЯ ТЕСТЕРОВ: впишите свой Telegram в href ниже. Это единственное место, остальные кнопки берут ссылку отсюда. -->
+        <a class="btn btn--light" id="tester-link" href="https://t.me/YOUR_TELEGRAM" rel="noopener">Стать тестером</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot__row">
+      <span class="brand__name">Michelangelo</span>
+      <span>© 2026 · без трекеров и cookies</span>
+      <a href="assets/fonts/licenses/">Шрифты: SIL OFL</a>
+    </div>
+  </footer>
+</body>
+</html>
