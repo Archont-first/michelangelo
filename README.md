@@ -95,3 +95,12 @@ DNS обновляется от нескольких минут до суток.
 ffmpeg -i in.mp4 -vf scale=540:960 -c:v libx264 -crf 27 -maxrate 1400k -bufsize 2800k \
   -c:a aac -b:a 96k -movflags +faststart out.mp4
 ```
+
+## Hero «Сотворение Адама» (тестовая страница `hero-test.html`)
+
+- `assets/art/hands.jpg` — фрагмент фрески Микеланджело «Сотворение Адама» (1508–1512), общественное достояние;
+  источник — Wikimedia Commons, «Michelangelo - Creation of Adam (cropped).jpg». Исходники
+  `creation-of-adam.jpg` / `creation-full.jpg` в git не кладутся (.gitignore).
+- `assets/hero.js` — свой код на Canvas2D, без библиотек: рука Бога — фреска, рука Адама написана строкой
+  «i saw the angel in the marble and carved until i set him free» (фраза, которую приписывают Микеланджело).
+  Пасхалка в предплечье проявляется под курсором; ещё одна — в консоли браузера.
