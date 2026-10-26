@@ -14,7 +14,7 @@
   var INK = [21, 18, 19];
   var RED = [164, 48, 42];
   var LEVELS = [".·:'`", "-~=+*^", "<>/|!?;$%", "(){}[]λσθπ∑∂√≈", "01xy#&@∇∫", "01#@≠∞"]; // light → heavy: punctuation → operators → code → math → bits
-  var SEAM = 0.655;          // gap between the fingers (fraction of image width)
+  var SEAM = 0.493;          // gap between the fingers (fraction of image width)
   var FOCUS_X = 0.62;        // what stays visible on narrow screens
   var img = new Image();
   img.src = root.getAttribute('data-src');
@@ -66,7 +66,7 @@
     var pd = pc.getImageData(0, 0, plaster.width, plaster.height), q = pd.data;
     for (var n = 0; n < q.length; n += 4) {
       var l = 0.299 * q[n] + 0.587 * q[n + 1] + 0.114 * q[n + 2];
-      var arm = Math.max(smooth(0.07, 0.16, (q[n] - q[n + 2]) / 255), smooth(150, 105, l)); // painted skin + outlines → bare wall
+      var arm = Math.max(smooth(0.07, 0.12, (q[n] - q[n + 2]) / 255), smooth(185, 140, l)); // painted skin + outlines → bare wall
       l = l + (214 - l) * arm;
       q[n] = l * 1.02; q[n + 1] = l * 0.98; q[n + 2] = l * 0.92;
     }
@@ -90,7 +90,7 @@
     for (var n2 = 0; n2 < a.length; n2 += 4) {
       var r = a[n2] / 255, g = a[n2 + 1] / 255, b = a[n2 + 2] / 255;
       var lum = 0.299 * r + 0.587 * g + 0.114 * b;
-      var keep = Math.max(smooth(0.1, 0.2, r - b), smooth(0.5, 0.36, lum) * 0.8);
+      var keep = Math.max(smooth(0.075, 0.14, r - b), smooth(0.74, 0.52, lum));
       a[n2 + 3] = a[n2 + 3] * keep;
     }
     c.putImageData(id, 0, 0);
@@ -142,7 +142,7 @@
       var k = (j * cols + i) * 4, R = d[k] / 255, G = d[k + 1] / 255, B = d[k + 2] / 255;
       var lum = 0.299 * R + 0.587 * G + 0.114 * B;
       var dark = Math.min(1, Math.max(0, (1 - lum) * 1.4 - 0.2));
-      var skin = smooth(0.12, 0.24, R - B);           // warm = arm, cool = sky/plaster
+      var skin = Math.max(smooth(0.075, 0.15, R - B), smooth(0.74, 0.5, lum)); // warm or darker than the wall = arm
       var edge = smooth(0, 0.06, (x - view.x) / view.w) * smooth(0, 0.18, (y - view.y) / view.h) * smooth(0, 0.18, (view.y + view.h - y) / view.h);
       V[j * cols + i] = Math.min(1, Math.max(0, (skin * (0.34 + 0.66 * curve(dark)) - 0.04) * edge));
     }
@@ -167,7 +167,7 @@
     // the line attributed to Michelangelo himself. Read it up close.
     var STREAM = 'i saw the angel in the marble and carved until i set him free \u00b7 ';
     var EGGS = [
-      { text: 'you found it. say hi: t.me/foundermd', from: 0.45, to: 0.75 },
+      { text: 'you found it. say hi: t.me/foundermd', from: 0.45, to: 0.75, whole: true },
       { text: 'everything around you that you call life was made up by people that were no smarter than you', from: 0.2, to: 0.45 }
     ];
     var k = 0;
@@ -190,7 +190,7 @@
           if (eg.pos >= eg.text.length || (j !== eg.row && j !== eg.row + 2)) continue;
           var run = 0; while (i + run < cols && V[j * cols + i + run] >= 0.1) run++;
           var room = Math.floor(run * cell / cw) - 2;
-          if (room < 12) continue;
+          if (room < 12 || (eg.whole && room < eg.text.length)) continue;
           var piece = eg.text.slice(eg.pos);
           if (piece.length > room) { var cut = piece.lastIndexOf(' ', room); piece = piece.slice(0, cut > 0 ? cut : room); }
           var ex = i * cell + cw;
@@ -284,7 +284,7 @@
       var glow = 0.14 + 0.06 * Math.sin(t * 0.002);
       var a = t < touch ? 0 : Math.max(f2 * 0.55, smooth(touch, touch + 800, t) * glow);
       if (a > 0.005) {
-        var gx = view.x + view.w * SEAM, gy = view.y + view.h * 0.58, rr = Math.max(40, view.w * 0.05) * (1 + f2 * 1.2);
+        var gx = view.x + view.w * SEAM, gy = view.y + view.h * 0.485, rr = Math.max(40, view.w * 0.05) * (1 + f2 * 1.2);
         var g = ctx.createRadialGradient(gx, gy, 0, gx, gy, rr);
         g.addColorStop(0, 'rgba(200,55,45,' + a + ')'); g.addColorStop(1, 'rgba(200,55,45,0)');
         ctx.fillStyle = g; ctx.fillRect(gx - rr, gy - rr, rr * 2, rr * 2);
