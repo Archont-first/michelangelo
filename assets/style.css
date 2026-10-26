@@ -181,3 +181,18 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
 .cube path.face-top{fill:#F0DCD6}
 .card--end{grid-column:1/-1}
 @media (max-width:560px){.card--end{grid-column:auto}}
+
+
+/* ---- hero «Сотворение Адама» (assets/hero.js) ---- */
+@font-face{font-family:"Young Serif";src:url(fonts/young-serif-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url(fonts/jetbrains-mono-greek-500-normal.woff2) format("woff2");font-weight:500;font-display:swap;unicode-range:U+0370-03FF}
+.logo--text{font:400 26px/1 "Young Serif",Georgia,serif;color:var(--red);line-height:1;letter-spacing:-.01em}
+.logo--text:hover{color:var(--red-hi)}
+.hero{padding-top:clamp(8px,2vw,24px)}
+.adam{--hero-bg:#F4EDE3;position:relative;width:100%;height:clamp(300px,36vw,600px);touch-action:pan-y;cursor:crosshair}
+.adam canvas{display:block}
+.hero__head{text-align:center;padding-top:clamp(20px,3vw,40px)}
+.hero__title--en{margin-top:0;font:400 clamp(52px,9vw,136px)/.98 "Young Serif",Georgia,serif;letter-spacing:-.035em}
+.hero__title--en em{font-style:normal}
+.hero__head .hero__actions{justify-content:center}
+@media (max-width:480px){.logo--text{font-size:22px}}

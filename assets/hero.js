@@ -276,7 +276,7 @@
   function draw(now) {
     var t = now - t0;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+    ctx.clearRect(0, 0, W, H);                        // transparent: the page background shows through
     ctx.globalAlpha = 0.34; ctx.drawImage(plaster, 0, 0, W, H); ctx.globalAlpha = 1;
     drawRuler(t);
 

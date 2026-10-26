@@ -96,7 +96,7 @@ ffmpeg -i in.mp4 -vf scale=540:960 -c:v libx264 -crf 27 -maxrate 1400k -bufsize 
   -c:a aac -b:a 96k -movflags +faststart out.mp4
 ```
 
-## Hero «Сотворение Адама» (тестовая страница `hero-test.html`)
+## Hero «Сотворение Адама» (главная)
 
 - `assets/art/hands.jpg` — фрагмент фрески Микеланджело «Сотворение Адама» (1508–1512), общественное достояние;
   источник — Wikimedia Commons, «Creation of Adam (Michelangelo) Detail.jpg» (PD-Art). Исходники
