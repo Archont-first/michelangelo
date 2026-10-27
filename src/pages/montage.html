@@ -1,6 +1,7 @@
 <!-- page: id="montage" title="Монтаж — michelangelo" desc="Редактор michelangelo: загрузите видео, фото и музыку и напишите словами, что сделать. Идёт закрытый тест." -->
 <!-- head -->
 <script src="/assets/site.js" defer></script>
+<script src="/assets/anim.js" defer></script>
 <!-- /head -->
   <main id="main" class="wrap">
     <div class="section-head">
@@ -44,7 +45,10 @@
         <button class="btn btn--lg go" type="button" data-go disabled>Собрать черновик</button>
 
         <div class="progress" data-progress hidden aria-live="polite">
-          <div class="progress__bar" role="progressbar" aria-label="Подготовка" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i data-bar></i></div>
+          <div class="progress__top" role="progressbar" aria-label="Подготовка" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span class="anim-cube" data-cube aria-hidden="true"></span>
+            <b class="progress__pct" data-pct>0%</b>
+          </div>
           <ol class="progress__steps">
             <li data-step>Проверяю файлы</li>
             <li data-step>Смотрю кадры и сцены</li>
@@ -54,13 +58,16 @@
         </div>
 
         <div class="gate" data-gate hidden role="status">
-          <p class="eyebrow" style="color:var(--ink-accent,#E8928A)">Закрытый тест</p>
-          <h2>Идёт закрытый тест — оставьте заявку</h2>
-          <p>Монтаж работает на нашей платформе, доступ пока по приглашениям. Напишите в Telegram — пришлём ссылку. Ваши файлы на этом сайте никуда не отправлялись.</p>
-          <div class="row">
-            <a class="btn" href="https://t.me/foundermd" rel="noopener">Оставить заявку в Telegram</a>
-            <a class="btn btn--ghost" href="/examples/">Посмотреть примеры</a>
+          <div class="gate__text">
+            <p class="eyebrow" style="color:var(--ink-accent,#E8928A)">Закрытый тест</p>
+            <h2>Идёт закрытый тест — оставьте заявку</h2>
+            <p>Монтаж работает на нашей платформе, доступ пока по приглашениям. Напишите в Telegram — пришлём ссылку. Ваши файлы на этом сайте никуда не отправлялись.</p>
+            <div class="row">
+              <a class="btn" href="https://t.me/foundermd" rel="noopener">Оставить заявку в Telegram</a>
+              <a class="btn btn--ghost" href="/examples/">Посмотреть примеры</a>
+            </div>
           </div>
+          <div class="gate__art" data-david aria-hidden="true"></div>
         </div>
       </div>
 

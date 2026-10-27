@@ -16,7 +16,10 @@
     var go = editor.querySelector('[data-go]');
     var prompt = editor.querySelector('[data-prompt]');
     var progress = editor.querySelector('[data-progress]');
-    var bar = editor.querySelector('[data-bar]');
+    var pct = editor.querySelector('[data-pct]');
+    var cubeBox = editor.querySelector('[data-cube]');
+    var davidBox = editor.querySelector('[data-david]');
+    var stopCube = null, stopDavid = null;
     var steps = editor.querySelectorAll('[data-step]');
     var gate = editor.querySelector('[data-gate]');
     var MAX = 20;
@@ -87,7 +90,10 @@
       });
       render();
     }
-    input.addEventListener('change', function () { add(input.files); input.value = ''; });
+    input.addEventListener('change', function () {
+      if (window.MichelAnim && input.files.length) window.MichelAnim.preload(['cube-light', 'david']); // плеер и данные — к моменту «Собрать»
+      add(input.files); input.value = '';
+    });
     ['dragenter', 'dragover'].forEach(function (t) {
       drop.addEventListener(t, function (e) { e.preventDefault(); drop.setAttribute('data-over', 'true'); });
     });
@@ -120,10 +126,12 @@
       var dur = reduce ? 600 : 5200;
       var t0 = performance.now();
       var pb = progress.querySelector('[role="progressbar"]');
+      if (stopDavid) { stopDavid(); stopDavid = null; }
+      if (window.MichelAnim && !stopCube) stopCube = window.MichelAnim.mount(cubeBox, 'cube-light');
       function tick(now) {
         var k = Math.min(1, (now - t0) / dur);
         var e = 1 - Math.pow(1 - k, 1.6);
-        bar.style.width = (e * 100).toFixed(1) + '%';
+        pct.textContent = Math.round(e * 100) + '%';
         pb.setAttribute('aria-valuenow', String(Math.round(e * 100)));
         steps.forEach(function (li, i) {
           var a = i / steps.length, z = (i + 1) / steps.length;
@@ -132,6 +140,8 @@
         if (k < 1) requestAnimationFrame(tick);
         else {
           gate.hidden = false;
+          if (stopCube) { stopCube(); stopCube = null; }
+          if (window.MichelAnim) stopDavid = window.MichelAnim.mount(davidBox, 'david');
           go.textContent = 'Собрать черновик';
           busy = false;
           go.disabled = false;
