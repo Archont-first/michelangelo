@@ -159,11 +159,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
 .steps span{font:500 14px/1.6 var(--mono);color:var(--red-text)}
 .steps h3{font:600 18px/1.4 var(--sans)}
 .steps p{margin-top:4px;color:var(--muted);font-size:15px}
-.cube{width:100%;max-width:380px;margin:0 auto;overflow:visible}
-.cube path{fill:none;stroke:var(--red-text);stroke-width:1.1;stroke-linejoin:round}
-.cube .face-top{fill:rgb(164 48 42 / .10)}
-.cube g.piece{transition:transform 1.1s cubic-bezier(.2,.8,.2,1),opacity .6s}
-@media (max-width:860px){.how{grid-template-columns:1fr}.cube{max-width:260px}}
+@media (max-width:860px){.how{grid-template-columns:1fr}}
 
 /* cta */
 .cta{padding:clamp(96px,14vw,180px) 0;text-align:center;background:radial-gradient(50% 60% at 50% 100%,rgb(164 48 42 / .12),transparent 70%)}
@@ -177,8 +173,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
-.cube path{fill:var(--bg-2)}
-.cube path.face-top{fill:#F0DCD6}
 .card--end{grid-column:1/-1}
 @media (max-width:560px){.card--end{grid-column:auto}}
 

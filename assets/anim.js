@@ -73,7 +73,7 @@
 
   // mount(el, 'cube-light' | 'cube-dark' | 'david') → destroy(). Нет анимации — в рамке остаётся то, что было рядом.
   function mount(el, name) {
-    var anim = null, gone = false;
+    var anim = null, gone = false, playing = true;
     var box = document.createElement('span');
     var z = ZOOM[name] || 1;
     box.style.cssText = 'position:absolute;inset:' + (-(z - 1) / 2 * 100) + '%';
@@ -86,13 +86,33 @@
         rendererSettings: { preserveAspectRatio: 'xMidYMid meet' }
       });
       if (reduce) anim.goToAndStop(0, true);
+      else if (!playing) anim.pause();
       el.setAttribute('data-ready', '');
     }).catch(function () {});
-    return function () { gone = true; if (anim) anim.destroy(); box.remove(); el.removeAttribute('data-ready'); };
+    function stop() { gone = true; if (anim) anim.destroy(); box.remove(); el.removeAttribute('data-ready'); }
+    // play/pause — для анимации, которая проигрывается только пока на экране (до загрузки плеера запоминаем желаемое)
+    stop.play = function () { playing = true; if (anim && !reduce) anim.play(); };
+    stop.pause = function () { playing = false; if (anim && !reduce) anim.pause(); };
+    return stop;
+  }
+
+  // mountInView: плеер и данные грузятся, когда блок подъезжает к экрану; на экране — играет, вне экрана — пауза
+  function mountInView(el, name) {
+    var stop = null;
+    if (!('IntersectionObserver' in window)) return mount(el, name);
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { if (!stop) stop = mount(el, name); else stop.play(); }
+        else if (stop) stop.pause();
+      });
+    }, { rootMargin: '120px 0px', threshold: 0.01 });
+    io.observe(el);
+    return function () { io.disconnect(); if (stop) stop(); };
   }
 
   window.MichelAnim = {
     mount: mount,
+    mountInView: mountInView,
     preload: function (names) { player().catch(function () {}); (names || []).forEach(function (n) { data(n).catch(function () {}); }); }
   };
 })();

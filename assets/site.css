@@ -184,6 +184,10 @@
 .lic th{font-weight:600}
 .lic .tablewrap{overflow-x:auto}
 
+/* главная, «Скульптор…»: Давид рядом с текстом (на телефоне — под ним) */
+.how__art{position:relative;width:100%;max-width:380px;aspect-ratio:878/960;margin:0 auto;overflow:hidden;line-height:0;border-radius:18px;background:var(--accent-soft)}
+@media (max-width:860px){.how__art{max-width:240px}}
+
 /* телефон: Давид маленький сверху, текст под ним */
 @media (max-width:640px){
   .gate{grid-template-columns:1fr}

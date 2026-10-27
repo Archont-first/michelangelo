@@ -12,8 +12,8 @@ CSP в каждой странице разрешает только свой д
 | `src/library/` | «Библиотека»: React-страница, повторяет `/library` платформы → `scripts/build-library.mjs` собирает `assets/library/app.js` + `app.css` |
 | `assets/style.css` | бренд по `web/brand.json` платформы: молочный фон, красный `#A4302A`, логотип michelangelo строчными (Young Serif) |
 | `assets/site.css`, `assets/site.js` | меню (сверху; на телефоне — панель снизу), «Монтаж», «Примеры», «Документы → видео» |
-| `assets/app.js`, `assets/hero.js` | главная: кубик и hero |
-| `assets/anim.js`, `assets/anim/`, `assets/vendor/lottie/` | кубик и Давид из платформы (Lottie, ветка `anim-loaders`): перекраска в бренд при загрузке, плеер lottie-web (MIT) и данные подключаются лениво тегами `<script>` только на «Монтаже» (CSP `connect-src 'none'` не даёт `fetch`). `*.js` в `assets/anim/` — обёртки над `*.json`: `python3 scripts/build-anim.py` |
+| `assets/app.js`, `assets/hero.js` | главная: Давид в блоке «Скульптор…» (играет, пока блок на экране) и hero |
+| `assets/anim.js`, `assets/anim/`, `assets/vendor/lottie/` | кубик и Давид из платформы (Lottie, ветка `anim-loaders`): перекраска в бренд при загрузке, плеер lottie-web (MIT) и данные подключаются лениво тегами `<script>` на «Монтаже» (кубик, Давид) и в блоке «Скульптор…» на главной (Давид; `mountInView` — играет только на экране) (CSP `connect-src 'none'` не даёт `fetch`). `*.js` в `assets/anim/` — обёртки над `*.json`: `python3 scripts/build-anim.py` |
 | `assets/media/examples/` | примеры «до/после» (540×960 H.264, faststart) + постеры |
 | `assets/media/docs/` | пример «Документы → видео» (720×1280, без звука) |
 | `assets/fonts/` | шрифты сайта; `motion/` — шрифты сцен библиотеки (из платформы); `licenses/` — тексты OFL |
