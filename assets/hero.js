@@ -23,6 +23,7 @@
   var view = { x: 0, y: 0, w: 0, h: 0 }; // where the image is drawn (cover-fit)
   var mouse = { x: -1e4, y: -1e4, on: false };
   var running = false, visible = true, ready = false;
+  var settleAt = 0, lastInput = 0, moving = false; // idle: once the hand is built and nobody touches it, stop redrawing
   var grain = makeGrain();
 
   function smooth(a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); }
@@ -243,6 +244,9 @@
       }
     }
     parts.sort(function (a, b) { return a.col < b.col ? -1 : 1; });
+    // assembled + the touch flash and glow have faded in (see draw)
+    settleAt = 2700;
+    for (var pi = 0; pi < parts.length; pi++) settleAt = Math.max(settleAt, parts[pi].delay + 900);
   }
 
   // a quiet editing timeline under the hands; the playhead sits exactly at the moment of creation
@@ -292,6 +296,7 @@
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     var R2 = Math.pow(W < 560 ? 60 : 90, 2), tilt = mouse.on ? Math.max(-1, Math.min(1, (mouse.x - W * 0.5) / (W * 0.5))) * 10 : 0;
     var lastCol = '';
+    moving = false;
     for (var n = 0; n < parts.length; n++) {
       var p = parts[n];
       var k = reduce ? 1 : ease(Math.min(1, Math.max(0, (t - p.delay) / 900)));
@@ -305,6 +310,7 @@
         if (d2 < R2) { var f = 1 - d2 / R2, dd = Math.sqrt(d2) || 1; tx = dx / dd * f * f * 34; ty = dy / dd * f * f * 34; }
       }
       p.mx += (tx - p.mx) * 0.16; p.my += (ty - p.my) * 0.16;
+      if (p.mx * p.mx + p.my * p.my > 0.01) moving = true;
       x += p.mx + tilt * k * (1 - p.x / W); y += p.my;
       // the easter egg hides in plain sight and turns ink-black only under the cursor
       var colNow = p.col, aNow = p.a;
@@ -344,8 +350,10 @@
     if (now - last < 33) return; // ~30 fps
     last = now;
     draw(now);
+    // at rest the last frame stays on the canvas and the CPU sleeps; a pointer wakes it up
+    if (!mouse.on && !moving && now - t0 > settleAt && now - lastInput > 1200) stop();
   }
-  function start() { if (running || reduce || !ready) return; running = true; raf = requestAnimationFrame(loop); }
+  function start() { if (running || reduce || !ready || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(loop); }
   function stop() { running = false; cancelAnimationFrame(raf); }
 
   function init() {
@@ -360,20 +368,39 @@
   function onPointer(e) {
     var r = canvas.getBoundingClientRect();
     mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.on = true;
+    lastInput = performance.now(); start();
   }
+  function onLeave() { mouse.on = false; lastInput = performance.now(); start(); } // let the letters spring back, then sleep
   root.addEventListener('pointermove', onPointer);
   root.addEventListener('pointerdown', onPointer);
-  root.addEventListener('pointerleave', function () { mouse.on = false; });
+  root.addEventListener('pointerleave', onLeave);
+  root.addEventListener('pointercancel', onLeave); // iOS: a vertical swipe turns into a scroll
 
   var rt = 0;
-  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (img.complete) { layout(); if (reduce) draw(t0 + 5000); } }, 150); });
-  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else if (visible) start(); });
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      if (!ready) return;
+      // iOS fires resize when the URL bar shows/hides; the hero's size doesn't change, so don't rebuild
+      var r = root.getBoundingClientRect();
+      if (Math.round(r.width) === W && Math.round(r.height) === H && Math.min(2, window.devicePixelRatio || 1) === dpr) return;
+      layout();
+      if (reduce) draw(t0 + 5000); else start();
+    }, 150);
+  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible && !document.hidden) start(); else stop(); }).observe(root);
+    new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) start(); else stop(); }).observe(root);
   }
 
   try { console.log('%cmichelangelo', 'font:24px Georgia;color:#A4302A', '\n"everything around you that you call life was made up by people that were no smarter than you." — steve jobs, 1994\ncurious? we are looking for testers → https://t.me/foundermd'); } catch (e) {}
 
-  var go = function () { (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(init); };
+  // Safari loads a web font only once something uses it, and fonts.ready doesn't wait for canvas text:
+  // ask for the mono face explicitly so measureText() gets JetBrains Mono, not the fallback
+  var go = function () {
+    var f = document.fonts;
+    (f && f.load ? Promise.all([f.load('500 12px "JetBrains Mono"', 'i saw·'), f.ready]) : Promise.resolve())
+      .then(init, init);
+  };
   if (img.complete && img.naturalWidth) go(); else img.addEventListener('load', go);
 })();
