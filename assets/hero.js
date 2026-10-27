@@ -23,8 +23,11 @@
   var view = { x: 0, y: 0, w: 0, h: 0 }; // where the image is drawn (cover-fit)
   var mouse = { x: -1e4, y: -1e4, on: false };
   var running = false, visible = true, ready = false;
-  var settleAt = 0, lastInput = 0, moving = false; // idle: once the hand is built and nobody touches it, stop redrawing
-  var grain = makeGrain();
+  // idle: once the hand is built and nobody touches it, the hand is drawn once into `still` and only the touch glow
+  // and the timeline keep moving, at IDLE_MS (grain stands still); a pointer brings back the full animation
+  var settleAt = 0, lastInput = 0, moving = false, idle = false, still = null;
+  var IDLE_MS = 80; // ~12 fps
+  var grain = makeGrain(), grainX = (Math.random() * 128) | 0, grainY = (Math.random() * 128) | 0;
 
   function smooth(a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); }
   function curve(x) { // tone curve (0→.18, .5→.56, 1→1) on darkness
@@ -53,6 +56,7 @@
     view.x = W / 2 - view.w * SEAM;
     view.y = (H - view.h) / 2;
     cell = W < 560 ? 7 : W < 1000 ? 7.5 : 8;
+    still = null; idle = false;
     buildFresco();
     buildSilhouette();
     buildParticles();
@@ -277,23 +281,26 @@
 
   function ease(x) { return 1 - Math.pow(1 - x, 3); }
 
-  function draw(now) {
-    var t = now - t0;
+  // the wall and the timeline sit under the hands
+  function drawUnder(t) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);                        // transparent: the page background shows through
     ctx.globalAlpha = 0.34; ctx.drawImage(plaster, 0, 0, W, H); ctx.globalAlpha = 1;
     drawRuler(t);
+  }
 
+  // the hands: God's fresco, Adam's silhouette and his characters — into ctx, or once into `still` (c)
+  function drawHands(c, t) {
     // fresco fades in slightly after the characters start
-    ctx.globalAlpha = reduce ? 1 : smooth(200, 1300, t);
-    ctx.drawImage(fresco, 0, 0, W, H);
-    ctx.globalAlpha = 1;
+    c.globalAlpha = reduce ? 1 : smooth(200, 1300, t);
+    c.drawImage(fresco, 0, 0, W, H);
+    c.globalAlpha = 1;
 
-    ctx.globalAlpha = 0.16 * (reduce ? 1 : smooth(600, 1900, t));
-    ctx.drawImage(silhouette, 0, 0, W, H);
-    ctx.globalAlpha = 1;
-    ctx.font = '500 ' + fs + 'px "JetBrains Mono", Menlo, "SF Mono", ui-monospace, monospace';
-    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    c.globalAlpha = 0.16 * (reduce ? 1 : smooth(600, 1900, t));
+    c.drawImage(silhouette, 0, 0, W, H);
+    c.globalAlpha = 1;
+    c.font = '500 ' + fs + 'px "JetBrains Mono", Menlo, "SF Mono", ui-monospace, monospace';
+    c.textAlign = 'left'; c.textBaseline = 'middle';
     var R2 = Math.pow(W < 560 ? 60 : 90, 2), tilt = mouse.on ? Math.max(-1, Math.min(1, (mouse.x - W * 0.5) / (W * 0.5))) * 10 : 0;
     var lastCol = '';
     moving = false;
@@ -318,13 +325,15 @@
         var ex2 = x - mouse.x, ey2 = y - mouse.y;
         if (ex2 * ex2 + ey2 * ey2 < 140 * 140) { colNow = '#151213'; aNow = 1; }
       }
-      if (colNow !== lastCol) { ctx.fillStyle = colNow; lastCol = colNow; }
-      ctx.globalAlpha = aNow * k;
-      ctx.fillText(p.ch, x, y);
+      if (colNow !== lastCol) { c.fillStyle = colNow; lastCol = colNow; }
+      c.globalAlpha = aNow * k;
+      c.fillText(p.ch, x, y);
     }
-    ctx.globalAlpha = 1;
+    c.globalAlpha = 1;
+  }
 
-    // the touch: a red spark between the fingers once Adam's hand is assembled
+  // the touch: a red spark between the fingers once Adam's hand is assembled, then a slow glow; film grain on top
+  function drawTouch(t, grainStill) {
     if (!reduce) {
       var touch = 1900, f2 = t < touch ? 0 : Math.max(0, 1 - Math.abs(t - touch - 380) / 380);
       var glow = 0.14 + 0.06 * Math.sin(t * 0.002);
@@ -338,23 +347,60 @@
       // film grain
       ctx.globalAlpha = 0.05; ctx.globalCompositeOperation = 'multiply';
       ctx.fillStyle = ctx.createPattern(grain, 'repeat');
-      ctx.save(); ctx.translate((Math.random() * 128) | 0, (Math.random() * 128) | 0);
+      ctx.save(); ctx.translate(grainStill ? grainX : (Math.random() * 128) | 0, grainStill ? grainY : (Math.random() * 128) | 0);
       ctx.fillRect(-128, -128, W + 256, H + 256); ctx.restore();
       ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
     }
   }
 
-  var last = 0;
+  function draw(now) {
+    var t = now - t0;
+    drawUnder(t);
+    drawHands(ctx, t);
+    drawTouch(t, false);
+  }
+
+  // at rest: the hand is one image, only the glow and the timeline move (a handful of draw calls instead of
+  // thousands of fillText per frame)
+  function drawIdle(now) {
+    var t = now - t0;
+    drawUnder(t);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(still, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawTouch(t, true);
+  }
+
+  function goIdle(now) {
+    if (!still || still.width !== W * dpr || still.height !== H * dpr) {
+      still = document.createElement('canvas'); still.width = W * dpr; still.height = H * dpr;
+    }
+    var c = still.getContext('2d');
+    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, still.width, still.height);
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawHands(c, now - t0); // the hand as it is right now: assembled, nobody pushing the letters
+    idle = true;
+  }
+  function wake() {
+    lastInput = performance.now();
+    if (!idle) return;
+    idle = false;
+    if (running) { clearTimeout(nap); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); } // back to full speed now
+  }
+
+  var last = 0, nap = 0;
   function loop(now) {
+    if (idle) { // at rest the page isn't woken every display frame: a timer asks for the next frame
+      last = now; drawIdle(now);
+      nap = setTimeout(function () { raf = requestAnimationFrame(loop); }, IDLE_MS);
+      return;
+    }
     raf = requestAnimationFrame(loop);
-    if (now - last < 33) return; // ~30 fps
+    if (now - last < 33) return; // ~30 fps when alive
     last = now;
     draw(now);
-    // at rest the last frame stays on the canvas and the CPU sleeps; a pointer wakes it up
-    if (!mouse.on && !moving && now - t0 > settleAt && now - lastInput > 1200) stop();
+    if (!mouse.on && !moving && now - t0 > settleAt && now - lastInput > 1200) goIdle(now);
   }
   function start() { if (running || reduce || !ready || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(loop); }
-  function stop() { running = false; cancelAnimationFrame(raf); }
+  function stop() { running = false; cancelAnimationFrame(raf); clearTimeout(nap); }
 
   function init() {
     layout();
@@ -368,9 +414,9 @@
   function onPointer(e) {
     var r = canvas.getBoundingClientRect();
     mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.on = true;
-    lastInput = performance.now(); start();
+    wake(); start();
   }
-  function onLeave() { mouse.on = false; lastInput = performance.now(); start(); } // let the letters spring back, then sleep
+  function onLeave() { mouse.on = false; wake(); start(); } // let the letters spring back, then rest again
   root.addEventListener('pointermove', onPointer);
   root.addEventListener('pointerdown', onPointer);
   root.addEventListener('pointerleave', onLeave);
