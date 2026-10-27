@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: data:; font-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Монтаж — michelangelo</title>
+  <meta name="description" content="Редактор michelangelo: загрузите видео, фото и музыку и напишите словами, что сделать. Идёт закрытый тест.">
+  <meta name="theme-color" content="#F4EDE3">
+  <meta name="color-scheme" content="light">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Монтаж — michelangelo">
+  <meta property="og:description" content="Редактор michelangelo: загрузите видео, фото и музыку и напишите словами, что сделать. Идёт закрытый тест.">
+  <meta property="og:url" content="https://michelangelo.lol/montage/">
+  <meta property="og:image" content="https://michelangelo.lol/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://michelangelo.lol/montage/">
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/young-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
+</head>
+<body class="page-montage">
+  <a class="skip" href="#main">К содержанию</a>
+  <header class="topnav" data-site-nav>
+    <div class="topnav__row">
+      <a class="logo logo--text" href="/" aria-label="michelangelo — на главную">michelangelo</a>
+      <nav class="topnav__links" aria-label="Разделы">
+        <a class="topnav__link" href="/montage/" data-active="true" aria-current="page"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M216,104H102.09L210,75.51a8,8,0,0,0,5.68-9.84l-8.16-30a15.93,15.93,0,0,0-19.42-11.13L35.81,64.74a15.75,15.75,0,0,0-9.7,7.4,15.51,15.51,0,0,0-1.55,12L32,111.56c0,.14,0,.29,0,.44v88a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V112A8,8,0,0,0,216,104ZM192.16,40l6,22.07L164.57,71,136.44,54.72ZM77.55,70.27l28.12,16.24-59.6,15.73-6-22.08Z"></path></svg><span>Монтаж</span></a>
+        <a class="topnav__link" href="/library/" data-active="false"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"></path></svg><span>Библиотека</span></a>
+        <a class="topnav__link" href="/docs/" data-active="false"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"></path></svg><span>Документы → видео</span></a>
+        <a class="topnav__link" href="/examples/" data-active="false"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm48.24-94.78-64-40A8,8,0,0,0,100,88v80a8,8,0,0,0,12.24,6.78l64-40a8,8,0,0,0,0-13.56ZM116,153.57V102.43L156.91,128Z"></path></svg><span>Примеры</span></a>
+      </nav>
+    </div>
+  </header>
+  <nav class="tabbar" aria-label="Разделы" data-site-nav>
+    <a class="tabbar__tab" href="/montage/" data-active="true" aria-current="page"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M216,104H102.09L210,75.51a8,8,0,0,0,5.68-9.84l-8.16-30a15.93,15.93,0,0,0-19.42-11.13L35.81,64.74a15.75,15.75,0,0,0-9.7,7.4,15.51,15.51,0,0,0-1.55,12L32,111.56c0,.14,0,.29,0,.44v88a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V112A8,8,0,0,0,216,104ZM192.16,40l6,22.07L164.57,71,136.44,54.72ZM77.55,70.27l28.12,16.24-59.6,15.73-6-22.08Z"></path></svg><span>Монтаж</span></a>
+        <a class="tabbar__tab" href="/library/" data-active="false"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"></path></svg><span>Библиотека</span></a>
+        <a class="tabbar__tab" href="/docs/" data-active="false"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"></path></svg><span>Документы</span></a>
+        <a class="tabbar__tab" href="/examples/" data-active="false"><svg fill="currentColor" viewBox="0 0 256 256" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm48.24-94.78-64-40A8,8,0,0,0,100,88v80a8,8,0,0,0,12.24,6.78l64-40a8,8,0,0,0,0-13.56ZM116,153.57V102.43L156.91,128Z"></path></svg><span>Примеры</span></a>
+  </nav>
+  <main id="main" class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Монтаж</p>
+      <h1>Загрузи материалы</h1>
+      <p class="lead">Видео, фото и музыка — всё вместе. Из них сразу соберётся черновик ролика, дальше — чат: «склейки в бит», «убери паузы», «субтитры как у блогеров».</p>
+    </div>
+
+    <div class="editor" data-editor>
+      <div>
+        <label class="drop" data-drop>
+          <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z"/></svg>
+          <b>Перетащите файлы сюда или нажмите, чтобы выбрать</b>
+          <p>До 20 файлов: видео, фото, музыка. На этом сайте файлы <strong>не покидают ваш компьютер</strong> — превью строится в браузере.</p>
+          <input type="file" multiple accept="video/*,image/*,audio/*" data-files>
+        </label>
+        <ul class="picked" data-picked aria-label="Выбранные файлы" hidden></ul>
+        <p class="counter" data-counter hidden></p>
+
+        <div class="field">
+          <span class="label" id="format-label">Формат ролика</span>
+          <div class="formats" role="radiogroup" aria-labelledby="format-label">
+            <button type="button" role="radio" aria-checked="true" data-format="9:16"><i style="width:14px;height:24px"></i>Reels, Shorts<small>9:16</small></button>
+            <button type="button" role="radio" aria-checked="false" data-format="16:9"><i style="width:26px;height:15px"></i>YouTube<small>16:9</small></button>
+            <button type="button" role="radio" aria-checked="false" data-format="1:1"><i style="width:20px;height:20px"></i>Квадрат<small>1:1</small></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="prompt">Что хочется получить? <span class="opt">необязательно</span></label>
+          <textarea id="prompt" rows="3" maxlength="1000" placeholder="Например: динамичный ролик про поездку, под музыку" data-prompt></textarea>
+          <div class="hints" aria-label="Примеры просьб">
+            <button type="button">склейки в бит</button>
+            <button type="button">убери паузы и «эээ»</button>
+            <button type="button">субтитры как у блогеров</button>
+            <button type="button">цвет как в кино</button>
+            <button type="button">короче, до 30 секунд</button>
+          </div>
+        </div>
+
+        <button class="btn btn--lg go" type="button" data-go disabled>Собрать черновик</button>
+
+        <div class="progress" data-progress hidden aria-live="polite">
+          <div class="progress__bar" role="progressbar" aria-label="Подготовка" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i data-bar></i></div>
+          <ol class="progress__steps">
+            <li data-step>Проверяю файлы</li>
+            <li data-step>Смотрю кадры и сцены</li>
+            <li data-step>Слушаю речь и музыку</li>
+            <li data-step>Собираю черновик</li>
+          </ol>
+        </div>
+
+        <div class="gate" data-gate hidden role="status">
+          <p class="eyebrow" style="color:var(--ink-accent,#E8928A)">Закрытый тест</p>
+          <h2>Идёт закрытый тест — оставьте заявку</h2>
+          <p>Монтаж работает на нашей платформе, доступ пока по приглашениям. Напишите в Telegram — пришлём ссылку. Ваши файлы на этом сайте никуда не отправлялись.</p>
+          <div class="row">
+            <a class="btn" href="https://t.me/foundermd" rel="noopener">Оставить заявку в Telegram</a>
+            <a class="btn btn--ghost" href="/examples/">Посмотреть примеры</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="side__card">
+          <h3>Как это работает</h3>
+          <ol>
+            <li>Загрузите съёмку с телефона, запись разговора или набор клипов с музыкой.</li>
+            <li>Напишите, как монтажёру: «собери рилс под музыку», «убери паузы».</li>
+            <li>Посмотрите, поправьте словами, скачайте в 1080p. Каждая правка — новая версия.</li>
+          </ol>
+        </div>
+        <div class="side__card privacy">
+          <div><b>Файлы остаются у вас.</b> Это демо-страница без сервера: выбранные файлы не загружаются и не сохраняются — превью и длительность браузер считает сам.</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <footer class="foot">
+    <div class="wrap foot__row">
+      <a class="logo logo--text logo--foot" href="/">michelangelo</a>
+      <span>© 2026 · без трекеров и cookies · файлы никуда не отправляются</span>
+      <a href="/licenses/">Лицензии</a>
+    </div>
+  </footer>
+</body>
+</html>

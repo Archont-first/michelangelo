@@ -1,0 +1,81 @@
+<!-- page: id="montage" title="Монтаж — michelangelo" desc="Редактор michelangelo: загрузите видео, фото и музыку и напишите словами, что сделать. Идёт закрытый тест." -->
+<!-- head -->
+<script src="/assets/site.js" defer></script>
+<!-- /head -->
+  <main id="main" class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Монтаж</p>
+      <h1>Загрузи материалы</h1>
+      <p class="lead">Видео, фото и музыка — всё вместе. Из них сразу соберётся черновик ролика, дальше — чат: «склейки в бит», «убери паузы», «субтитры как у блогеров».</p>
+    </div>
+
+    <div class="editor" data-editor>
+      <div>
+        <label class="drop" data-drop>
+          <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0ZM93.66,77.66,120,51.31V144a8,8,0,0,0,16,0V51.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,77.66Z"/></svg>
+          <b>Перетащите файлы сюда или нажмите, чтобы выбрать</b>
+          <p>До 20 файлов: видео, фото, музыка. На этом сайте файлы <strong>не покидают ваш компьютер</strong> — превью строится в браузере.</p>
+          <input type="file" multiple accept="video/*,image/*,audio/*" data-files>
+        </label>
+        <ul class="picked" data-picked aria-label="Выбранные файлы" hidden></ul>
+        <p class="counter" data-counter hidden></p>
+
+        <div class="field">
+          <span class="label" id="format-label">Формат ролика</span>
+          <div class="formats" role="radiogroup" aria-labelledby="format-label">
+            <button type="button" role="radio" aria-checked="true" data-format="9:16"><i style="width:14px;height:24px"></i>Reels, Shorts<small>9:16</small></button>
+            <button type="button" role="radio" aria-checked="false" data-format="16:9"><i style="width:26px;height:15px"></i>YouTube<small>16:9</small></button>
+            <button type="button" role="radio" aria-checked="false" data-format="1:1"><i style="width:20px;height:20px"></i>Квадрат<small>1:1</small></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="prompt">Что хочется получить? <span class="opt">необязательно</span></label>
+          <textarea id="prompt" rows="3" maxlength="1000" placeholder="Например: динамичный ролик про поездку, под музыку" data-prompt></textarea>
+          <div class="hints" aria-label="Примеры просьб">
+            <button type="button">склейки в бит</button>
+            <button type="button">убери паузы и «эээ»</button>
+            <button type="button">субтитры как у блогеров</button>
+            <button type="button">цвет как в кино</button>
+            <button type="button">короче, до 30 секунд</button>
+          </div>
+        </div>
+
+        <button class="btn btn--lg go" type="button" data-go disabled>Собрать черновик</button>
+
+        <div class="progress" data-progress hidden aria-live="polite">
+          <div class="progress__bar" role="progressbar" aria-label="Подготовка" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i data-bar></i></div>
+          <ol class="progress__steps">
+            <li data-step>Проверяю файлы</li>
+            <li data-step>Смотрю кадры и сцены</li>
+            <li data-step>Слушаю речь и музыку</li>
+            <li data-step>Собираю черновик</li>
+          </ol>
+        </div>
+
+        <div class="gate" data-gate hidden role="status">
+          <p class="eyebrow" style="color:var(--ink-accent,#E8928A)">Закрытый тест</p>
+          <h2>Идёт закрытый тест — оставьте заявку</h2>
+          <p>Монтаж работает на нашей платформе, доступ пока по приглашениям. Напишите в Telegram — пришлём ссылку. Ваши файлы на этом сайте никуда не отправлялись.</p>
+          <div class="row">
+            <a class="btn" href="https://t.me/foundermd" rel="noopener">Оставить заявку в Telegram</a>
+            <a class="btn btn--ghost" href="/examples/">Посмотреть примеры</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="side__card">
+          <h3>Как это работает</h3>
+          <ol>
+            <li>Загрузите съёмку с телефона, запись разговора или набор клипов с музыкой.</li>
+            <li>Напишите, как монтажёру: «собери рилс под музыку», «убери паузы».</li>
+            <li>Посмотрите, поправьте словами, скачайте в 1080p. Каждая правка — новая версия.</li>
+          </ol>
+        </div>
+        <div class="side__card privacy">
+          <div><b>Файлы остаются у вас.</b> Это демо-страница без сервера: выбранные файлы не загружаются и не сохраняются — превью и длительность браузер считает сам.</div>
+        </div>
+      </aside>
+    </div>
+  </main>
